@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/all.min.css">
+    <title>Todo List</title>
+
+
+</head>
+
+<body>
+
+    <style>
+        .table {
+            width: 100%;
+        }
+
+        .navbar {
+            width: 100%;
+        }
+
+        @media only screen and (max-width:790px) {
+
+            .table {
+                width: 100%;
+            }
+
+        }
+
+        @media only screen and (max-width:410px) {
+
+            .navbar {
+                width: 101%;
+            }
+
+        }
+
+        @media only screen and (max-width:400px) {
+
+            .navbar {
+                width: 110%;
+            }
+
+        }
+
+        @media only screen and (max-width:354px) {
+
+            .navbar {
+                width: 120%;
+            }
+
+            .table {
+                width: 50%;
+            }
+
+        }
+
+        @media only screen and (max-width:346px) {
+
+            .navbar {
+                width: 120%;
+            }
+
+            .table {
+                width: 50%;
+            }
+
+        }
+    </style>
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
+        <a class="navbar-brand" href="#">Todos List</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Items <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Description</a>
+                </li>
+
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <h1 class="my-4" style="text-align: center;">TODOs LIST</h1>
+
+    <div style="margin: 0px 25% 0px 25%;">
+        <div class="form-group">
+            <label for="exampleFormControlInput1" id="titleL">Title</label>
+            <input type="email" class="form-control" id="title">
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1" id="descriptionL">Description</label>
+            <textarea class="form-control" id="description" rows="3"></textarea>
+        </div>
+        <button class="btn btn-primary" id="add">Add Items</button>
+    </div>
+    <h1 class="my-4">Your Items</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">SL NO.</th>
+                <th scope="col">Item Title</th>
+                <th scope="col">Item Description</th>
+                <th scope="col">Time</th>
+                <th scope="col">Date</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody id="tablebody">
+            <tr>
+                <th scope="row">1</th>
+                <td>Go to marker</td>
+                <td>To get this job done</td>
+                <td>time</td>
+                <td>Date</td>
+                <td><i class="far fa-trash-alt"></i></td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <script>
+        function getAndUpdate() {
+            console.log("updating")
+            tit = document.getElementById('title').value;
+            desc = document.getElementById('description').value;
+            a = new Date();
+            time = a.getHours() + ' : ' + a.getMinutes() + ' : ' + a.getSeconds();
+            date = a.getDate() + '/' + a.getMonth() + '/' + a.getFullYear();
+
+            // console.log(tit)
+            // console.log(desc)
+            // console.log(localStorage.getItem('itemsJson'))
+            if (localStorage.getItem('itemsJson') == null) {
+
+                itemJsonArray = [];
+                itemJsonArray.push([tit, desc, time, date]);
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+
+            }
+            else {
+
+                itemJsonArrayStr = localStorage.getItem('itemsJson')
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+                itemJsonArray.push([tit, desc, time, date]);
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+                console.log(localStorage.getItem('itemsJson'));
+            }
+            update();
+
+        }
+        function update() {
+
+            if (localStorage.getItem('itemsJson') == null) {
+
+                itemJsonArray = [];
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+
+            }
+            else {
+
+                itemJsonArrayStr = localStorage.getItem('itemsJson');
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+            }
+
+
+            //populating table
+            let str = "";
+            let tablebody = document.getElementById("tablebody");
+            itemJsonArray.forEach((element, index) => {
+
+                str += ` 
+                <tr>
+                <th scope="row">${index + 1}</th>
+                <td>${element[0]}</td>
+                <td>${element[1]}</td>
+                <td>${element[2]}</td>
+                <td>${element[3]}</td>
+                <td><i class="far fa-trash-alt" onclick="deleted(${index})"></i></td>
+                </tr>`;
+            });
+            tablebody.innerHTML = str;
+
+        }
+
+        add = document.getElementById("add");
+        add.addEventListener("click", getAndUpdate);
+        update();
+        function deleted(itemIndex) {
+            console.log("Delete", itemIndex);
+            itemJsonArrayStr = localStorage.getItem('itemsJson')
+            itemJsonArray = JSON.parse(itemJsonArrayStr);
+
+            //deleting 
+            itemJsonArray.splice(itemIndex, 1);
+            localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+            update()
+        }
+    </script>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
